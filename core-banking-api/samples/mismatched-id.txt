@@ -1,0 +1,5 @@
+SYNTHETIC DEMO - NOT VALID
+Document type: CNIC
+Full Name: Sara Ali
+ID Number: 42101-7654321-9
+Fictional portfolio test data. Deliberately mismatches the Ayesha Khan demo account.

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#103f40">
+  <title>Vault — Banking studio</title>
+  <link rel="stylesheet" href="/static/styles.css?v=3">
+  <script src="/static/app.js?v=3" defer></script>
+</head>
+<body class="signed-out">
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 1-8 8H5l-3 3V11a9 9 0 0 1 18 0Z"/><path d="M7 10h8M7 14h5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 12h8M8 16h5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-bank" viewBox="0 0 24 24"><path d="m3 8 9-5 9 5H3Zm2 3v7m7-7v7m7-7v7M3 21h18"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </defs></svg>
+
+  <section id="auth-shell" class="auth-shell" aria-labelledby="auth-heading">
+    <div class="auth-story">
+      <a href="/demo" class="brand" aria-label="Vault banking studio home"><span class="brand-mark" aria-hidden="true">v.</span><span>vault<span class="brand-sub">BANKING STUDIO</span></span></a>
+      <div class="auth-story-copy"><p class="eyebrow">BANKING, WITH A LITTLE MORE CLARITY</p><h1>One account.<br>A clearer picture.</h1><p>Move your demo money, ask your assistant, and keep your identity review in one place.</p><div class="auth-features"><span>Account activity</span><span>Banking assistant</span><span>Document review</span></div></div>
+      <p class="auth-disclaimer">Portfolio banking simulation · Synthetic funds and documents</p>
+    </div>
+    <div class="auth-card">
+      <p class="eyebrow">YOUR VAULT WORKSPACE</p><h2 id="auth-heading">Welcome back.</h2><p id="auth-description" class="muted">Sign in to see your account and activity.</p>
+      <div class="segmented auth-switch" aria-label="Sign in or register"><button type="button" data-auth-mode="login" class="selected" aria-pressed="true">Sign in</button><button type="button" data-auth-mode="register" aria-pressed="false">Create profile</button></div>
+      <form id="auth-form">
+        <div id="register-name-field" hidden><label class="field-label" for="auth-name">Full name</label><input id="auth-name" name="full_name" autocomplete="name" minlength="2" maxlength="100" placeholder="Your full name"></div>
+        <label class="field-label" for="auth-email">Email address</label><input id="auth-email" name="email" type="email" autocomplete="username" maxlength="254" placeholder="you@example.com" required>
+        <label class="field-label" for="auth-password">Password</label><input id="auth-password" name="password" type="password" autocomplete="current-password" maxlength="128" required><p id="password-help" class="field-help" hidden>Use at least 10 characters.</p>
+        <p id="auth-error" class="notice error" role="alert" hidden></p><button id="auth-submit" class="primary-button full-width" type="submit">Sign in <svg class="icon"><use href="#i-arrow"/></svg></button>
+      </form>
+      <div id="demo-logins" class="demo-logins" hidden><span class="small-label">EXPLORE THE LOCAL DEMO</span><p>Choose a sample profile to fill in the sign-in details.</p><div class="demo-login-buttons"><button type="button" data-demo-email="ayesha.customer@example.com">Ayesha <span>Customer</span></button><button type="button" data-demo-email="hassan.customer@example.com">Hassan <span>Customer</span></button><button type="button" data-demo-email="reviewer@example.com">Reviewer <span>KYC team</span></button></div></div>
+      <a class="auth-docs" href="/docs" target="_blank" rel="noopener">Explore the API ↗</a>
+    </div>
+  </section>
+
+  <aside id="sidebar" class="sidebar" hidden>
+    <a href="/demo" class="brand" aria-label="Vault banking studio home"><span class="brand-mark" aria-hidden="true">v.</span><span>vault<span class="brand-sub">BANKING STUDIO</span></span></a>
+    <div class="sidebar-label">YOUR WORKSPACE</div>
+    <nav class="tabs" aria-label="Banking workspace">
+      <button class="nav-button selected" type="button" data-tab="banking" data-role="customer" aria-current="page"><svg class="icon"><use href="#i-bank"/></svg>My banking<span class="nav-dot"></span></button>
+      <button class="nav-button" type="button" data-tab="assistant" data-role="customer"><svg class="icon"><use href="#i-chat"/></svg>AI assistant<span class="nav-dot"></span></button>
+      <button class="nav-button" type="button" data-tab="document" data-role="customer"><svg class="icon"><use href="#i-file"/></svg>Identity review<span class="nav-dot"></span></button>
+      <button class="nav-button" type="button" data-tab="reviews" data-role="reviewer" hidden><svg class="icon"><use href="#i-check"/></svg>KYC queue<span class="nav-dot"></span></button>
+    </nav>
+    <div id="account-area" class="account-area"><label class="sidebar-label" for="account-select">YOUR ACCOUNT</label><select id="account-select" aria-label="Select your account"><option value="">Loading account…</option></select><button id="new-account" class="text-button" type="button"><svg class="icon"><use href="#i-plus"/></svg>Open an account</button><p class="account-hint">Your account, visible only to you.</p></div>
+    <div class="sidebar-bottom"><div class="profile-line"><span id="profile-name"></span><span id="profile-role" class="role-pill"></span></div><button id="logout" class="logout-button" type="button">Sign out ↗</button><p>Synthetic funds · Portfolio demo</p><a href="/docs" target="_blank" rel="noopener">Explore the API <span aria-hidden="true">↗</span></a></div>
+  </aside>
+
+  <main id="workspace" hidden>
+    <header class="page-header"><div><p class="eyebrow">A LITTLE CLARITY, EVERY DAY</p><h1 id="page-title">Your banking, in focus.</h1><p id="page-description">A clear view of your account and every move.</p></div><span class="workspace-badge"><span class="local-dot"></span>SIMULATED BANKING</span></header>
+    <p id="global-error" class="notice error" role="alert" hidden></p>
+    <div id="empty-account" class="empty-account" hidden><div><strong>Your profile is ready. Let’s open your account.</strong><p>Choose a starting balance of synthetic funds to explore the banking workflow.</p></div><button class="primary-button" id="open-first-account" type="button">Open account <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+    <section id="overview" class="overview" aria-label="Account overview">
+      <div class="balance-card"><div class="balance-top"><span>AVAILABLE DEMO BALANCE</span><span id="account-status" class="status-pill">—</span></div><div class="balance-value"><span>PKR</span><strong id="balance-value">—</strong></div><div class="balance-bottom"><span id="account-owner">Open an account to begin</span><span class="balance-decoration" aria-hidden="true">◒</span></div></div>
+      <div class="activity-card"><div class="section-heading"><h2>Recent activity</h2><span class="small-label">LATEST 3</span></div><div id="transaction-list" class="transaction-list"><p class="muted">Your transactions will appear here.</p></div></div>
+    </section>
+
+    <section id="banking-panel" class="workspace-panel" aria-labelledby="banking-heading">
+      <div class="panel-header"><div class="panel-title"><span class="assistant-icon"><svg class="icon"><use href="#i-bank"/></svg></span><div><h2 id="banking-heading">Make your next move.</h2><p>Deposits, withdrawals, and transfers using synthetic funds.</p></div></div><button id="refresh-banking" class="secondary-button" type="button">Refresh ↻</button></div>
+      <div class="banking-grid"><div class="money-input"><div class="segmented" aria-label="Transaction action"><button type="button" data-operation="deposit" class="selected" aria-pressed="true">Deposit</button><button type="button" data-operation="withdraw" aria-pressed="false">Withdraw</button><button type="button" data-operation="transfer" aria-pressed="false">Transfer</button></div>
+        <form id="money-form"><label class="field-label" for="money-amount">Amount (PKR)</label><input id="money-amount" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]{1,2})?" maxlength="18" placeholder="0.00" required><p class="field-help">Use up to two decimal places.</p><div id="recipient-field" hidden><label class="field-label" for="recipient-id">Recipient account ID</label><input id="recipient-id" type="text" maxlength="64" autocomplete="off" placeholder="Paste the recipient’s account ID"><p class="field-help">Ask the recipient to copy their account ID from their own workspace.</p></div><label class="field-label" for="money-note">Note <span>optional</span></label><input id="money-note" type="text" maxlength="200" placeholder="What’s this for?"><p id="money-message" class="notice" role="status" aria-live="polite" hidden></p><button id="money-submit" class="primary-button full-width" type="submit">Deposit funds <svg class="icon"><use href="#i-arrow"/></svg></button></form>
+      </div><div class="account-details"><span class="small-label">YOUR ACCOUNT DETAILS</span><h3>A destination for your demo transfers.</h3><p class="muted">Share this account ID when someone wants to send you synthetic funds.</p><label class="field-label" for="account-id-display">Account ID</label><div class="copy-field"><input id="account-id-display" type="text" readonly value="" aria-label="Your account ID"><button id="copy-account-id" class="secondary-button" type="button">Copy</button></div><p id="copy-message" class="field-help" role="status"></p><div class="funds-note"><span class="local-dot"></span>Every balance here is simulated.<p>No real payments or bank accounts are connected.</p></div></div></div>
+      <div class="history-section"><div class="history-heading"><div><h3>Transaction history</h3><p class="muted">Every movement, with the balance after it.</p></div><label class="sr-only" for="history-filter">Filter transaction type</label><select id="history-filter"><option value="">All activity</option><option value="deposit">Deposits</option><option value="withdrawal">Withdrawals</option><option value="transfer_in">Transfers received</option><option value="transfer_out">Transfers sent</option></select></div><div id="history-list" class="history-list" aria-live="polite"></div><div class="pagination"><button id="history-prev" class="secondary-button" type="button" disabled>← Previous</button><span id="history-page" class="small-label">PAGE 1</span><button id="history-next" class="secondary-button" type="button" disabled>Next →</button></div></div>
+    </section>
+
+    <section id="assistant-panel" class="workspace-panel" aria-labelledby="assistant-heading" hidden>
+      <div class="panel-header"><div class="panel-title"><span class="assistant-icon"><svg class="icon"><use href="#i-spark"/></svg></span><div><h2 id="assistant-heading">Your banking assistant</h2><p>Account insights, without the searching.</p></div></div><span id="assistant-mode" class="mode-badge">Connecting…</span></div>
+      <p id="demo-tip" class="demo-tip" hidden>Local demo responses are on. Balance and transaction tools use your account; FAQ answers include their sources.</p>
+      <div id="chat-log" class="chat-log" role="log" aria-label="Conversation" aria-live="polite"></div>
+      <div class="composer-area"><div class="suggestions" aria-label="Suggested questions"><button type="button" data-question="What's my balance?">What’s my balance? <span>↗</span></button><button type="button" data-question="Show my last 5 transactions">Last 5 transactions <span>↗</span></button><button type="button" data-question="What documents do I need for KYC?">KYC requirements <span>↗</span></button></div><form id="chat-form" class="chat-form"><label class="sr-only" for="chat-input">Ask your banking assistant</label><textarea id="chat-input" name="message" rows="1" maxlength="2000" placeholder="Ask about your account or banking…" required></textarea><button id="send-message" class="send-button" type="submit" aria-label="Send message"><svg class="icon"><use href="#i-arrow"/></svg></button></form><div class="composer-footer"><span><span class="tiny-dot"></span>Read-only account tools</span><span>Enter to send · Shift + Enter for a new line</span></div></div>
+    </section>
+
+    <section id="document-panel" class="workspace-panel" aria-labelledby="document-heading" hidden>
+      <div class="panel-header"><div class="panel-title"><span class="assistant-icon"><svg class="icon"><use href="#i-file"/></svg></span><div><h2 id="document-heading">Confidence in the details.</h2><p>Analyze, check your fields, and submit for human review.</p></div></div><span id="kyc-status" class="mode-badge">Not submitted</span></div>
+      <div class="document-grid"><div class="document-input"><h3>Upload a document</h3><p class="muted">Use a synthetic ID. Review extracted fields before submitting them.</p><form id="document-form"><label class="upload-area" for="document-file"><svg class="icon"><use href="#i-upload"/></svg><strong id="file-label">Choose a sample document</strong><span>PNG, JPG, WEBP or TXT · Up to 5 MB</span><input id="document-file" type="file" accept=".png,.jpg,.jpeg,.webp,.txt" required></label><label class="field-label" for="expected-id">Expected ID number <span>optional</span></label><input id="expected-id" type="text" maxlength="80" placeholder="42101-1234567-1"><p class="field-help">Used to compare against the extracted ID.</p><button id="analyze-document" class="primary-button full-width" type="submit">Analyze document <svg class="icon"><use href="#i-arrow"/></svg></button><p id="document-progress" class="field-help" role="status" aria-live="polite"></p></form><div class="sample-download"><span class="small-label">NEED A TEST DOCUMENT?</span><p>Ayesha Khan · 42101-1234567-1</p><a href="/samples/demo-id.png" download>Sample image ↓</a><a href="/samples/demo-id.txt" download>Sample text ↓</a></div></div><div class="document-output" id="document-output" aria-live="polite"></div></div>
+      <div class="kyc-submission"><div><h3>Check the fields. Then submit.</h3><p class="muted">You can correct extracted text or enter the fields manually. A reviewer makes the final decision.</p></div><form id="kyc-form"><div class="kyc-fields"><div><label class="field-label" for="kyc-name">Full name</label><input id="kyc-name" minlength="2" maxlength="100" required></div><div><label class="field-label" for="kyc-id">ID number</label><input id="kyc-id" minlength="5" maxlength="50" required></div><div><label class="field-label" for="kyc-type">Document type</label><input id="kyc-type" minlength="2" maxlength="50" placeholder="CNIC or Passport" required></div></div><div class="kyc-submit-row"><p id="kyc-message" class="notice" role="status" aria-live="polite" hidden></p><button id="submit-kyc" class="primary-button" type="submit">Submit for review <svg class="icon"><use href="#i-arrow"/></svg></button></div></form><div class="audit-section"><h3>Review history</h3><div id="customer-audit" class="audit-list" aria-live="polite"></div></div></div>
+    </section>
+
+    <section id="reviews-panel" class="workspace-panel" aria-labelledby="reviews-heading" hidden><div class="panel-header"><div class="panel-title"><span class="assistant-icon"><svg class="icon"><use href="#i-check"/></svg></span><div><h2 id="reviews-heading">A careful look, a clear decision.</h2><p>Review pending identity submissions and record your reason.</p></div></div><button id="refresh-reviews" class="secondary-button" type="button">Refresh ↻</button></div><div class="review-workspace"><div class="review-queue"><div class="section-heading"><h3>Pending submissions</h3><span id="review-count" class="small-label"></span></div><div id="review-list" aria-live="polite"></div></div><div id="review-detail" class="review-detail" aria-live="polite"><p class="muted">Choose a submission to review its details.</p></div></div></section>
+    <footer class="page-footer"><span>Built for exploration.</span><a href="/docs" target="_blank" rel="noopener">Explore the API ↗</a><span>Simulated banking · Use synthetic data only</span></footer>
+  </main>
+
+  <dialog id="account-dialog" aria-labelledby="account-dialog-title"><form id="account-form"><div class="dialog-heading"><h2 id="account-dialog-title">Open your demo account</h2><button class="close-button" id="close-account-dialog" type="button" aria-label="Close">×</button></div><p id="account-identity" class="muted"></p><label class="field-label" for="opening-deposit">Opening deposit (PKR)</label><input id="opening-deposit" name="opening_deposit" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]{1,2})?" maxlength="18" value="0.00" required><p class="field-help">Choose a starting balance of synthetic funds. Up to two decimal places.</p><p id="account-form-error" class="notice error" role="alert" hidden></p><button id="create-account-submit" class="primary-button full-width" type="submit">Open account <svg class="icon"><use href="#i-arrow"/></svg></button></form></dialog>
+</body>
+</html>

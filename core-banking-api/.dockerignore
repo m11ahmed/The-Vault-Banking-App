@@ -1,0 +1,14 @@
+.venv
+venv
+.env
+.env.*
+!.env.example
+.data
+*.db
+*.db-*
+*.log
+tests
+__pycache__
+.git
+dist
+artifacts

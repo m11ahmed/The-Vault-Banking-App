@@ -1,0 +1,50 @@
+[
+  {
+    "id": "demo-accounts",
+    "title": "Demo policy: accounts and balances",
+    "keywords": "open create account opening balance currency rupees PKR",
+    "text": "This fictional portfolio bank supports one simulated account per email address. Create an account with a name, email and optional opening deposit. The dashboard displays balances in PKR for this demo; the underlying starter API has no multi-currency support. Balances and transaction history come from the local banking database, not these FAQ documents. No real money is held or moved."
+  },
+  {
+    "id": "demo-transfers",
+    "title": "Demo policy: transfers",
+    "keywords": "transfer send money recipient recipient account insufficient funds",
+    "text": "Simulated transfers move funds between two different active accounts in this local application. The source account must have enough funds. The starter API records an outgoing and an incoming transaction. The assistant can explain transfers and read transaction history, but cannot execute transfers or any other money movement. This is a fictional demo policy, not a real bank's service."
+  },
+  {
+    "id": "demo-kyc",
+    "title": "Demo policy: KYC documents and review",
+    "keywords": "kyc identity verification verify id cnic passport document upload name mismatch",
+    "text": "KYC means Know Your Customer. In this fictional demo, submit a name, ID number and document type such as CNIC or Passport. Use synthetic sample data. Submissions are pending until a human reviewer verifies or rejects them. Document extraction can help compare fields and flag discrepancies; it does not establish that an ID is authentic and does not automatically approve KYC."
+  },
+  {
+    "id": "demo-deposits",
+    "title": "Demo policy: deposits and withdrawals",
+    "keywords": "deposit withdrawal withdraw add cash funds insufficient overdraft",
+    "text": "The fictional demo supports simulated deposits and withdrawals for active accounts. Amounts must be positive, and a withdrawal must not exceed the available balance. The assistant only reads account data and cannot deposit or withdraw funds. These operations are demonstrations with synthetic funds; no payment gateway or real bank is connected."
+  },
+  {
+    "id": "demo-fees",
+    "title": "Demo policy: fees and interest",
+    "keywords": "fee fees charge charges cost interest rate profit savings",
+    "text": "This fictional portfolio application does not implement fee deductions or interest accrual. Its simulated deposits, withdrawals and internal transfers do not add a fee. It has no real banking tariff, savings rate or investment product. Do not use these demo rules to infer the pricing or policies of any actual bank."
+  },
+  {
+    "id": "demo-status",
+    "title": "Demo policy: frozen and closed accounts",
+    "keywords": "frozen freeze blocked block closed close inactive active status",
+    "text": "An account in this fictional application can be active, frozen or closed. The starter API rejects deposits, withdrawals and transfers involving an account that is not active. The assistant can report the selected account's current status, but cannot freeze, unfreeze, close or reopen accounts."
+  },
+  {
+    "id": "demo-security",
+    "title": "Demo notice: privacy and access limitations",
+    "keywords": "privacy security login authentication password otp fraud access data safe",
+    "text": "This is a local portfolio demo with no customer authentication or reviewer authorization yet. Choosing an account in the dashboard is only demo context, not proof of ownership. Use synthetic customer records and synthetic identity documents. In Gemini or OpenAI mode, chat messages and read-tool results are sent to the selected provider. Google's free tier may use submitted content to improve its products. KYC document images are processed locally by RapidOCR and are not sent to either provider."
+  },
+  {
+    "id": "demo-history",
+    "title": "Demo policy: transaction history",
+    "keywords": "transaction transactions history statement recent latest last activity payment record",
+    "text": "The fictional demo records deposits, withdrawals, outgoing transfers and incoming transfers with their amount, creation time and resulting balance. An opening deposit is also recorded when nonzero. Ask the assistant for the last five transactions of the selected demo account; it can show up to twenty recent records per request. The application does not yet generate official account statements."
+  }
+]

@@ -1,0 +1,16 @@
+services:
+  vault:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DEMO_MODE: "true"
+      COOKIE_SECURE: "false"
+      AI_MODE: "demo"
+      DATABASE_URL: "sqlite:////data/banking.db"
+      CHROMA_DIR: "/data/chroma"
+    volumes:
+      - banking_data:/data
+    restart: unless-stopped
+volumes:
+  banking_data:
