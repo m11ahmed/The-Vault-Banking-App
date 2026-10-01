@@ -36,15 +36,15 @@ portfolio post. A spoken presentation can follow the steps above.
 > workflows, atomic integer-paisa transactions, persisted idempotency,
 > a read-only LangChain/Chroma assistant, and local OCR-assisted KYC review.
 
-Suggested repository name: `vault-core-banking-ai`.
+Source repository: [The Vault Banking App](https://github.com/m11ahmed/The-Vault-Banking-App).
 
 This workspace's Git repository contains the `core-banking-api` directory.
 The release ZIP contains that directory with its own complete README. For a
 standalone repository, upload or extract the project contents at the repo root.
 Never include `.env`, the virtual environment, banking databases or backups.
 
-Publishing is still pending: no GitHub remote or hosting account is connected
-to this workspace. A local commit/package is separate from a public URL.
+Public app hosting is still pending. The GitHub repository contains the source;
+it does not provide a running banking dashboard.
 
 ## Hosting configuration
 

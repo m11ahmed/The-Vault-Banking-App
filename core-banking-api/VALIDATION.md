@@ -108,8 +108,8 @@ No new application code was needed; the existing connection retry remains.
 - OpenAI access and live model answers remain untested.
 - PostgreSQL: locking implementation has not been tested on a running server.
 - Docker: files are prepared; no Docker executable was available for a build.
-- GitHub and hosted URL: no remote/account is connected; no public deployment
-  has been made.
+- Public app hosting: no running public deployment has been made. Source is
+  available in [The Vault Banking App](https://github.com/m11ahmed/The-Vault-Banking-App).
 
 This is a synthetic portfolio system. The test results do not establish
 production banking readiness, document authenticity or a Temenos integration.
