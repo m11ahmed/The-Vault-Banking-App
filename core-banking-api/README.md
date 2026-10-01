@@ -185,8 +185,13 @@ and restart the server:
 ```dotenv
 AI_MODE=gemini
 GEMINI_API_KEY=your-key
-GEMINI_MODEL=gemini-2.5-flash-lite
+GEMINI_MODEL=gemini-3.5-flash-lite
 ```
+
+The setup uses [Gemini 3.5 Flash-Lite](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite),
+which has a [free tier](https://ai.google.dev/gemini-api/docs/pricing).
+[Older 2.5 models](https://ai.google.dev/gemini-api/docs/deprecations) are
+restricted to previously active projects.
 
 Manage the key and your provider project's quota/billing settings in
 [Google AI Studio](https://aistudio.google.com/apikey). The app cannot establish
@@ -196,8 +201,10 @@ automatic provider fallback. Optional OpenAI configuration uses `AI_MODE=openai`
 `OPENAI_API_KEY` and `OPENAI_MODEL` from `.env.example`.
 
 Only chat/history and selected read-tool results reach an enabled model provider.
-KYC images stay local. Provider integration tests use mocked HTTP; live Gemini
-and OpenAI responses still require a later smoke test with a configured key.
+KYC images stay local. Provider integration tests use mocked HTTP. A live Gemini
+balance lookup and cited KYC FAQ answer passed on October 1, 2026. Other
+requests encountered intermittent TLS connection errors. See `VALIDATION.md` for the current verification scope.
+OpenAI has not been tested against a live provider.
 The status badge confirms key presence, not a successful live connection.
 
 Chroma indexes eight fictional FAQs with deterministic hashed word-count

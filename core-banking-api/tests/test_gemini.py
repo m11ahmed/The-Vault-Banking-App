@@ -22,7 +22,7 @@ def completion(text=None, calls=None):
     if calls:
         message["tool_calls"] = calls
     return {"id": "gemini-test", "object": "chat.completion", "created": 1,
-            "model": "gemini-2.5-flash-lite", "choices": [{"index": 0, "message": message,
+            "model": "gemini-3.5-flash-lite", "choices": [{"index": 0, "message": message,
             "finish_reason": "tool_calls" if calls else "stop"}]}
 
 
@@ -114,7 +114,7 @@ class GeminiTests(BankingTestCase):
         for request, body in self.requests:
             self.assertEqual(str(request.url), service.GEMINI_BASE_URL + "chat/completions")
             self.assertEqual(request.headers["authorization"], "Bearer fakeGeminiKey")
-            self.assertEqual(body["model"], "gemini-2.5-flash-lite")
+            self.assertEqual(body["model"], "gemini-3.5-flash-lite")
             self.assertEqual({item["function"]["name"] for item in body["tools"]}, {
                 "get_balance", "get_recent_transactions", "search_banking_faq",
             })
