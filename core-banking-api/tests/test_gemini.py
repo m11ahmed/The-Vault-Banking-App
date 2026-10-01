@@ -63,6 +63,8 @@ class GeminiTests(BankingTestCase):
         def transport(request):
             self.requests.append((request, json.loads(request.content)))
             item = next(scripted)
+            if isinstance(item, BaseException):
+                raise item
             status, body = item if isinstance(item, tuple) else (200, item)
             return httpx.Response(status, json=body, request=request)
 
@@ -157,6 +159,114 @@ class GeminiTests(BankingTestCase):
         self.assertNotIn("fakeGeminiKey", response.text)
         self.assertNotIn("private-account-data", response.text)
         self.assertEqual(len(self.requests), 1)
+
+    def test_connect_error_retries_identical_request_once_before_success(self):
+        selected = self.account(125)["id"]
+        with patch.object(service, "_execute_read_tool", wraps=service._execute_read_tool) as execute:
+            response = self.run_script([
+                httpx.ConnectError("private transport data fakeGeminiKey"),
+                completion(calls=[function_call("get_balance", {})]),
+                completion("Your balance is PKR 125.00."),
+            ], account_id=selected)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["tools_used"], ["get_balance"])
+        self.assertEqual(len(self.requests), 3)
+        self.assertEqual(self.requests[0][1], self.requests[1][1])
+        self.assertEqual(self.client_options[0]["max_retries"], 0)
+        execute.assert_called_once()
+        self.assertEqual(self.balance(selected), 125)
+
+    def test_connection_retry_after_tool_keeps_output_signature_and_executes_once(self):
+        selected = self.account(125)["id"]
+        with patch.object(service, "_execute_read_tool", wraps=service._execute_read_tool) as execute:
+            response = self.run_script([
+                completion(calls=[function_call("get_balance", {}, extra_content={
+                    "google": {"thought_signature": "opaque-retry-signature"},
+                })]),
+                httpx.ConnectError("private transport data fakeGeminiKey"),
+                completion("Your balance is PKR 125.00."),
+            ], account_id=selected)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["tools_used"], ["get_balance"])
+        self.assertEqual(len(self.requests), 3)
+        self.assertEqual(self.requests[1][1], self.requests[2][1])
+        replay = self.requests[2][1]["messages"]
+        self.assertEqual(replay[-2]["tool_calls"][0]["extra_content"]["google"]["thought_signature"],
+                         "opaque-retry-signature")
+        self.assertEqual(replay[-1]["role"], "tool")
+        self.assertEqual(replay[-1]["tool_call_id"], "call_1")
+        self.assertEqual(json.loads(replay[-1]["content"])["balance"], "125.00")
+        execute.assert_called_once()
+        self.assertEqual(self.balance(selected), 125)
+
+    def test_persistent_connect_error_stops_after_one_retry_and_is_sanitized(self):
+        response = self.run_script([
+            httpx.ConnectError("private transport data fakeGeminiKey"),
+            httpx.ConnectError("private transport data fakeGeminiKey"),
+            completion("A third attempt must never happen."),
+        ])
+        self.assertEqual(response.status_code, 503, response.text)
+        self.assertIn("connection to Gemini failed", response.json()["detail"])
+        self.assertEqual(len(self.requests), 2)
+        self.assertEqual(self.requests[0][1], self.requests[1][1])
+        self.assertNotIn("fakeGeminiKey", response.text)
+        self.assertNotIn("private transport data", response.text)
+
+    def test_connect_error_retry_budget_is_shared_across_model_rounds(self):
+        selected = self.account(125)["id"]
+        with patch.object(service, "_execute_read_tool", wraps=service._execute_read_tool) as execute:
+            response = self.run_script([
+                httpx.ConnectError("private transport data fakeGeminiKey"),
+                completion(calls=[function_call("get_balance", {})]),
+                httpx.ConnectError("private transport data fakeGeminiKey"),
+                completion("A second retry must never happen."),
+            ], account_id=selected)
+        self.assertEqual(response.status_code, 503, response.text)
+        self.assertIn("connection to Gemini failed", response.json()["detail"])
+        self.assertEqual(len(self.requests), 3)
+        self.assertEqual(self.requests[0][1], self.requests[1][1])
+        self.assertEqual(self.requests[2][1]["messages"][-1]["role"], "tool")
+        execute.assert_called_once()
+        self.assertEqual(self.balance(selected), 125)
+
+    def test_read_timeout_is_not_retried_and_has_distinct_sanitized_response(self):
+        response = self.run_script([
+            httpx.ReadTimeout("private transport data fakeGeminiKey"),
+            completion("A timed-out request must never be repeated."),
+        ])
+        self.assertEqual(response.status_code, 504, response.text)
+        self.assertIn("took too long", response.json()["detail"])
+        self.assertEqual(len(self.requests), 1)
+        self.assertNotIn("fakeGeminiKey", response.text)
+        self.assertNotIn("private transport data", response.text)
+
+    def test_read_and_write_errors_are_not_retried(self):
+        for error_type in (httpx.ReadError, httpx.WriteError):
+            with self.subTest(error=error_type.__name__):
+                self.requests.clear()
+                response = self.run_script([
+                    error_type("private transport data fakeGeminiKey"),
+                    completion("A possibly submitted request must never be repeated."),
+                ])
+                self.assertEqual(response.status_code, 503, response.text)
+                self.assertIn("connection to Gemini failed", response.json()["detail"])
+                self.assertEqual(len(self.requests), 1)
+                self.assertNotIn("fakeGeminiKey", response.text)
+                self.assertNotIn("private transport data", response.text)
+
+    def test_http_access_model_and_server_errors_are_not_retried(self):
+        for status in (403, 404, 503):
+            with self.subTest(status=status):
+                self.requests.clear()
+                response = self.run_script([
+                    (status, {"error": {"message": "private provider data fakeGeminiKey"}}),
+                    completion("An HTTP failure must never be repeated."),
+                ])
+                self.assertEqual(response.status_code, 503, response.text)
+                self.assertIn("Gemini is unavailable", response.json()["detail"])
+                self.assertEqual(len(self.requests), 1)
+                self.assertNotIn("fakeGeminiKey", response.text)
+                self.assertNotIn("private provider data", response.text)
 
     def test_account_override_and_unknown_write_tool_are_refused(self):
         selected = self.account(100)["id"]

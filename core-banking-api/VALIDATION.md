@@ -2,7 +2,7 @@
 
 ## Automated
 
-The final command was:
+The last full-suite run before the Gemini connectivity update used:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -q
@@ -51,16 +51,43 @@ After restarting the localhost backend with outbound network access:
   confirmed `APIConnectionError` caused by TLS `UNEXPECTED_EOF_WHILE_READING`.
   The key works, but those checks do not establish a consistently reliable
   network connection. The history question also failed on the browser retry;
-  successful live transaction-history answers remain unverified.
+  this is recorded as the original failure before the connectivity update below.
 - The updated offline assistant/Gemini suites passed: **33 tests in 71.605
   seconds**, with no failures. These are regression checks, not provider calls.
 
 The key is private and excluded from the source package. The app cannot determine
 the Google project's billing tier from the key.
 
+## Gemini connectivity update — October 1, 2026
+
+The user reported that successful prompts were followed by repeated failures.
+A new diagnostic reproduced `APIConnectionError` with `httpx.ConnectError` and
+TLS `UNEXPECTED_EOF_WHILE_READING`, before any Google HTTP response. No quota
+rejection was observed in that diagnostic.
+
+The service now retries one connection-setup failure per chat after 0.5 seconds,
+reusing the identical model round without executing a read tool again. SDK
+retries remain disabled; HTTP errors, read/write failures and timeouts are not
+retried. Connection failures return a clear 503 message, timeouts return 504,
+and the dashboard updates its previous connection badge after a failed request.
+
+- The updated targeted suites passed: **40 tests in 85.458 seconds**. Seven new
+  regressions verify retry bounds, exact replay, preserved tool output/signatures,
+  no duplicate tool execution, sanitized errors and excluded retry categories.
+  The full suite has not been rerun after this isolated assistant update.
+- A live authenticated history chat returned **200**, used
+  `get_recent_transactions`, and correctly listed the last five synthetic
+  transactions. The server log confirmed that the new connection retry recovered
+  an initial failure. This verifies a recovered request, not continuous network
+  availability.
+- A subsequent browser request still failed after the connection retry. The
+  updated UI showed **Gemini unavailable** and the specific connection message,
+  confirming that it no longer leaves a stale connected badge on that failure.
+  The external connection problem remains intermittent.
+
 ## Pending external verification
 
-- Consistent live Gemini connectivity and a successful history smoke check.
+- Consistent live Gemini connectivity remains dependent on the external network.
 - OpenAI access and live model answers remain untested.
 - PostgreSQL: locking implementation has not been tested on a running server.
 - Docker: files are prepared; no Docker executable was available for a build.

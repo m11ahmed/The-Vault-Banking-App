@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 import os
 import re
+import time
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Literal
@@ -27,6 +29,7 @@ KNOWLEDGE_FILE = Path(__file__).parent / "knowledge" / "banking_faq.json"
 MAX_MODEL_ROUNDS = 4
 MAX_TOOL_CALLS = 8
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+logger = logging.getLogger(__name__)
 AIMode = Literal["demo", "openai", "gemini"]
 
 
@@ -354,11 +357,13 @@ def _openai_chat(payload: ChatRequest, tools: dict) -> tuple[str, list[str]]:
 
 
 def _gemini_chat(payload: ChatRequest, tools: dict) -> tuple[str, list[str]]:
-    from openai import RateLimitError
+    import httpx
+    from openai import APIConnectionError, APITimeoutError, RateLimitError
 
     client = None
     used: list[str] = []
     call_count = 0
+    connection_retries_remaining = 1
     try:
         client = _create_gemini_client()
         definitions = [{"type": "function", "function": convert_to_openai_function(entry)}
@@ -367,12 +372,24 @@ def _gemini_chat(payload: ChatRequest, tools: dict) -> tuple[str, list[str]]:
         messages.extend(entry.model_dump() for entry in payload.history)
         messages.append({"role": "user", "content": payload.message})
         for round_number in range(MAX_MODEL_ROUNDS):
-            response = client.chat.completions.create(
-                model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite").strip() or "gemini-3.5-flash-lite",
-                messages=messages, tools=definitions,
-                tool_choice="required" if round_number == 0 else "auto",
-                parallel_tool_calls=False, max_tokens=900,
-            )
+            while True:
+                try:
+                    response = client.chat.completions.create(
+                        model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite").strip() or "gemini-3.5-flash-lite",
+                        messages=messages, tools=definitions,
+                        tool_choice="required" if round_number == 0 else "auto",
+                        parallel_tool_calls=False, max_tokens=900,
+                    )
+                    break
+                except APIConnectionError as exc:
+                    # A ConnectError occurs before sending the HTTP request.
+                    # Retry the identical round once per chat, without replaying
+                    # tools. Never retry timeouts, read/write failures or quotas.
+                    if not connection_retries_remaining or not isinstance(exc.__cause__, httpx.ConnectError):
+                        raise
+                    connection_retries_remaining -= 1
+                    logger.warning("Gemini connection setup failed; retrying once.")
+                    time.sleep(0.5)
             if not response.choices:
                 raise HTTPException(503, "Gemini returned no answer. Please try again.")
             message = response.choices[0].message
@@ -396,6 +413,12 @@ def _gemini_chat(payload: ChatRequest, tools: dict) -> tuple[str, list[str]]:
         raise
     except RateLimitError as exc:
         raise HTTPException(429, "Gemini rate limit or quota reached. Wait for the quota to reset or use AI_MODE=demo. No automatic provider or model fallback is configured.") from exc
+    except APITimeoutError as exc:
+        logger.warning("Gemini request timed out.")
+        raise HTTPException(504, "Gemini took too long to respond. Please try again.") from exc
+    except APIConnectionError as exc:
+        logger.warning("Gemini connection failed (%s).", type(exc.__cause__).__name__)
+        raise HTTPException(503, "The connection to Gemini failed. Please try again or check your internet connection.") from exc
     except Exception as exc:
         raise HTTPException(503, "Gemini is unavailable. Check GEMINI_API_KEY and GEMINI_MODEL on the server or retry later.") from exc
     finally:

@@ -13,7 +13,8 @@ banking-domain engineering; it does not connect to a bank or to Temenos.
 [Animated screenshot walkthrough](artifacts/demo-walkthrough.gif) ·
 [Demo and publishing guide](DEMO_GUIDE.md) · [Validation evidence](VALIDATION.md)
 
-Final local verification: **135 tests pass**. The customer, assistant, OCR and
+The previous full-suite run passed **135 tests**; the latest Gemini reliability
+update passed **40 targeted assistant tests**. The customer, assistant, OCR and
 reviewer workflows were also exercised in the desktop/mobile browser.
 
 ## Delivered features
@@ -202,10 +203,15 @@ automatic provider fallback. Optional OpenAI configuration uses `AI_MODE=openai`
 
 Only chat/history and selected read-tool results reach an enabled model provider.
 KYC images stay local. Provider integration tests use mocked HTTP. A live Gemini
-balance lookup and cited KYC FAQ answer passed on October 1, 2026. Other
-requests encountered intermittent TLS connection errors. See `VALIDATION.md` for the current verification scope.
+balance lookup, cited KYC FAQ answer, and last-five-transactions lookup passed
+on October 1, 2026. Intermittent TLS connection errors were also observed. The
+assistant now retries one connection-setup failure per chat with a short delay;
+it does not retry timeouts, HTTP errors or quota failures, and keeps TLS
+certificate verification enabled. See `VALIDATION.md` for verification scope.
 OpenAI has not been tested against a live provider.
-The status badge confirms key presence, not a successful live connection.
+The `configured` badge confirms key presence. `Connected` reflects the last
+successful chat; failed requests update it to unavailable, timed out or quota
+reached. None of these states establishes the Google project's billing tier.
 
 Chroma indexes eight fictional FAQs with deterministic hashed word-count
 vectors. This is **lexical retrieval**, not pretrained semantic embeddings.

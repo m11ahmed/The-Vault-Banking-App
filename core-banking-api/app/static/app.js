@@ -409,6 +409,10 @@ async function sendChat(message) {
     if (epoch !== state.epoch || request !== state.chatRequest) return;
     pending.remove();
     appendMessage("assistant", error.message, { error: true });
+    if (state.mode && state.mode !== "demo" && [429, 503, 504].includes(error.status)) {
+      const provider = state.mode === "gemini" ? "Gemini" : "OpenAI";
+      $("#assistant-mode").textContent = provider + (error.status === 429 ? " quota reached" : error.status === 504 ? " timed out" : " unavailable");
+    }
   } finally {
     if (epoch === state.epoch && request === state.chatRequest) {
       state.chatting = false;
