@@ -1,4 +1,4 @@
-# Validation — October 1, 2026
+# Validation — October 2, 2026
 
 ## Automated
 
@@ -84,6 +84,23 @@ and the dashboard updates its previous connection badge after a failed request.
   updated UI showed **Gemini unavailable** and the specific connection message,
   confirming that it no longer leaves a stale connected badge on that failure.
   The external connection problem remains intermittent.
+
+## Live Gemini recheck — October 2, 2026
+
+The local server was healthy and the saved source tree unchanged before this
+recheck. The user confirmed they were still using the same internet connection.
+Three sequential authenticated chat checks all returned **200** in Gemini mode:
+
+- Balance used `get_balance` and correctly returned PKR `11525.10`.
+- History used `get_recent_transactions` and returned the current last five
+  synthetic transactions with the correct amounts and balances.
+- The KYC question used `search_banking_faq` and returned the `demo-kyc` source.
+  This request also included the preceding successful history conversation.
+
+Account and transaction snapshots remained unchanged. The earlier connection
+failure did not recur during this sequence. This successful recheck does not
+establish continuous provider availability or verify the Google billing tier.
+No new application code was needed; the existing connection retry remains.
 
 ## Pending external verification
 

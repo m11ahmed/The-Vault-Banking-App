@@ -204,7 +204,8 @@ automatic provider fallback. Optional OpenAI configuration uses `AI_MODE=openai`
 Only chat/history and selected read-tool results reach an enabled model provider.
 KYC images stay local. Provider integration tests use mocked HTTP. A live Gemini
 balance lookup, cited KYC FAQ answer, and last-five-transactions lookup passed
-on October 1, 2026. Intermittent TLS connection errors were also observed. The
+on October 1 and again on October 2, 2026. Intermittent TLS connection errors
+were observed on October 1. The
 assistant now retries one connection-setup failure per chat with a short delay;
 it does not retry timeouts, HTTP errors or quota failures, and keeps TLS
 certificate verification enabled. See `VALIDATION.md` for verification scope.
@@ -299,8 +300,10 @@ and how the October 1 implementation addresses them.
 This is a single-currency PKR simulation with no payment network, Temenos
 integration or full double-entry general ledger. OCR extracts text; it does not
 authenticate an identity document. It has no external identity verification.
-Live model replies, PostgreSQL, Docker execution and public hosting remain
-unverified. Dependency compatibility checks are not a vulnerability audit.
+Live Gemini balance, FAQ and transaction-history replies were observed, but
+consistent connectivity is not established. OpenAI, PostgreSQL, Docker execution
+and public hosting remain unverified. Dependency compatibility checks are not a
+vulnerability audit.
 
 ## Project layout
 
