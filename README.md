@@ -1,10 +1,10 @@
-# Vault — Core Banking + AI Portfolio
+# Vault Core Banking + AI Portfolio
 
 The application and its complete setup guide are in
-[core-banking-api](core-banking-api/README.md).
+[core banking api](core-banking-api/README.md).
 
-FastAPI banking workflows, exact integer-paisa money, authenticated customer
-accounts, persisted payment retry protection, a read-only banking assistant,
+FastAPI banking workflows, exact integer paisa money, authenticated customer
+accounts, persisted payment retry protection, a read only banking assistant,
 local OCR and audited human KYC review, with a responsive dashboard.
 
 ![Vault banking dashboard](core-banking-api/artifacts/banking-desktop.jpg)
